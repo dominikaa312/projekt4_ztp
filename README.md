@@ -1,7 +1,8 @@
-# Wizualizacja poziomu zanieczyszczeń (PM2.5)
+# Pipeline Snakemake do analizy poziomu zanieczyszczeń (PM2.5) i przeglądu literatury PubMed
 
-Projekt ma na celu  wizualizację danych dotyczących poziomu zanieczyszczenia powietrza PM2.5, 
-aby ułatwić analizę danych oraz przedstawić zmiany stężenia pyłu w czasie w polskich miastach. 
+Projekt ma na celu  wizualizację danych dotyczących poziomu zanieczyszczenia powietrza PM2.5 w wybranych
+polskich miastach oraz zestawienie tych wyników z trendami w literaturze naukowej, co pozwala na lepszą 
+interpretację zmian poziomu zanieczyszczenia powietrza w czasie.
 
 ----------
 
@@ -21,7 +22,7 @@ aby ułatwić analizę danych oraz przedstawić zmiany stężenia pyłu w czasie
 
 1. Sklonuj repozytorium
 ```bash
-git clone https://github.com/zlewkarzbenc/ztp_grupa_16
+git clone https://github.com/dominikaa312/projekt4_ztp
 ```
 
 2. Utwórz wirtualne środowisko (zalecane)
@@ -33,12 +34,7 @@ source ./venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
-<!-- czy to potrzebne?
-4. Uruchom główny notebook
-```bash
-jupyter notebook
-```
--->
+
 ---------
 
 #### Źródła danych
@@ -47,9 +43,4 @@ jupyter notebook
 
 ---------
 
-### Autorzy: Aleksander Janowiak, Dominika Aniszewska
-
----------
-
-#### Niespodzianka dla pary 17
-Pomiary uśredniane są najpierw wewnątrz stacji, a w danych GIOS występują brakujące wartości co oznacza, że niektóre stacje mają danej doby mniej pomiarów niż inne. Przez to, poszczególne pomiary nie są traktowane równocennie. Brakujących wartości nie jest bardzo dużo, ale jest ich wystarczająco by metoda uśredniania wpływała na końcowy wykres.
+### Autor: Dominika Aniszewska
