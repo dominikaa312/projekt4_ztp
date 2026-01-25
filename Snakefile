@@ -1,13 +1,16 @@
+import json
 configfile: "config/task4.yaml"
 
 years = config["years"]
+cities = json.dumps(config["cities"])
 
 
 rule all:
     input:
         expand("results/pm25/{year}/exceedance_days.csv", year=years),
-        expand("results/pm25/{year}/daily_means.csv", year=years),
-        expand("results/pm25/{year}/figures/*.png", year=years),
+        expand("results/pm25/{year}/monthly_average.csv", year=years),
+        expand("results/pm25/{year}/figures/heatmap.png", year=years),
+        expand("results/pm25/{year}/figures/plot_city_trends.png", year=years),
         expand("results/literature/{year}/pubmed_papers.csv", year=years),
         expand("results/literature/{year}/summary_by_year.csv", year=years),
         expand("results/literature/{year}/top_journals.csv", year=years),
@@ -18,12 +21,14 @@ rule all:
 rule pm25_year:
     output:
         exceed="results/pm25/{year}/exceedance_days.csv",
-        daily="results/pm25/{year}/daily_means.csv",
-        figures="results/pm25/{year}/figures/*.png"
+        month="results/pm25/{year}/monthly_average.csv",
+        heatmap="results/pm25/{year}/figures/heatmap.png",
+        city_trends="results/pm25/{year}/figures/plot_city_trends.png"
     params:
-        year="{year}"
+        year="{year}",
+        threshold=config["pm25"]["norm_limit"]
     shell:
-        """ python scripts/NAZWA_PLIKU --year {params.year} --config config/task4.yaml """ # WPISAĆ NAZWĘ PLIKU!
+        """ python scripts/pm25.py --year {params.year} --threshold {params.threshold} --cities {cities} --config config/task4.yaml """
 
 
 rule pubmed_year:

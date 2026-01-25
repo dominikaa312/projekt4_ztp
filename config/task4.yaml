@@ -4,6 +4,10 @@ cities:
   - Warsaw
   - Katowice
 
+city_aliases:
+  Warszawa: ["Warsaw", "Warszawa"]
+  Katowice: ["Katowice"]
+
 pm25:
   norm_limit: 15
 
