@@ -1,7 +1,7 @@
-from visualizations import *
+from scripts.visualizations import *
 import pytest
 import pandas as pd
-from compute_averages import count_days_over_treshold
+from scripts.compute_averages import count_days_over_treshold
 
 
 # przykładowe dane

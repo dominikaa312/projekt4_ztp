@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from compute_averages import (
+from scripts.compute_averages import (
     monthly_average, 
     count_days_over_treshold,
     )
