@@ -26,9 +26,9 @@ rule pm25_year:
         city_trends="results/pm25/{year}/figures/plot_city_trends.png"
     params:
         year="{year}",
-        threshold=config["pm25"]["norm_limit"]
+        cities=cities
     shell:
-        """ python scripts/pm25.py --year {params.year} --threshold {params.threshold} --cities {cities} --config config/task4.yaml """
+        """ python scripts/pm25_year.py --year {params.year} --cities {params.cities} --config config/task4.yaml """
 
 
 rule pubmed_year:
@@ -40,8 +40,7 @@ rule pubmed_year:
     params:
         year="{year}"
     shell:
-        """ python scripts/NAZWA_PLIKU --year {params.year} --config config/task4.yaml """ # WPISAĆ NAZWĘ PLIKU!
-
+        """ python scripts/pubmed_fetch.py --year {params.year} --config config/task4.yaml """
 
 rule report_task4:
     input:

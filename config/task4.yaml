@@ -12,7 +12,8 @@ pm25:
   norm_limit: 15
 
 pubmed:
-  entrez_email: d.aniszewsk2@student.uw.edu.pl
+  entrez_email: 'd.aniszewsk2@student.uw.edu.pl'
   queries:
-    - (PM2.5 OR "fine particulate matter")
-  retmax: 100
+    - '"PM2.5"[TIAB]'
+    - '"fine particulate matter"[TIAB]'
+  retmax: 50

@@ -1,15 +1,89 @@
 import pandas as pd
-import ast
 
 
-def monthly_average_filter(data, year, cities):
+
+def monthly_average(data):
+    """
+    Function used to compute monthly averages of PM2.5 concentration in Zad2.
+    Averages over measurements in all stations for a given city in a given month (in a given year)
+    Args:
+        data (pandas.DataFrame): a dataframe of PM2.5 levels
+
+    Returns:
+        result (pandas.DataFrame): a dataframe of average monthly PM2.5 in each city with MultiIndex (year, month) and cities as columns.
+    """
+    # convert the incoherent date column to one unified format
+    s = data["Kod stacji"].astype(str)
+
+    # first attempt: with milliseconds
+    dt = pd.to_datetime(s, format="%Y-%m-%d %H:%M:%S.%f", errors="coerce")
+
+    # second attempt: without milliseconds, only where first failed
+    mask = dt.isna()
+    dt[mask] = pd.to_datetime(s[mask], format="%Y-%m-%d %H:%M:%S", errors="coerce")
+
+    # assign back
+    data["Kod stacji"] = dt
+
+    # extract year and month
+    data["year"] = dt.dt.year
+    data["month"] = dt.dt.month
+
+    data.drop("Rok", axis=1, inplace=True)
+
+    meta_cols = {"Kod stacji", "year", "month"}
+    station_cols = [c for c in data.columns if c not in meta_cols]
+
+    no_metadata_df = data.drop("Kod stacji", axis=1)
+
+    long = no_metadata_df.melt(id_vars=["year", "month"], value_vars=station_cols, var_name="station", value_name="pm2.5")
+
+    long["city"] = long["station"].str.extract(r"'([^']+)'")
+    long.drop("station", axis=1, inplace=True)
+
+    # perform the actual aggregation
+    long["pm2.5"] = pd.to_numeric(long["pm2.5"], errors="coerce")
+    long_avg = long.groupby(["year", "month", "city"], as_index=False).mean(numeric_only=True)
+    monthly = (long_avg
+    .pivot(
+        index=["year", "month"],
+        columns="city",
+        values="pm2.5"
+    )
+    .sort_index())
+
+    monthly.to_csv("monthly_average.csv", index=False)
+
+    return monthly
+
+
+
+def monthly_average_filter(data, year, cities, city_aliases):
+    """
+    Function used filter the data based on a certain year and cities
+    Args:
+        data (pandas.DataFrame): a dataframe of PM2.5 levels
+        year (int): year of interest
+        cities (list): list of cities of interest
+    Returns:
+        data_filtered (pandas.DataFrame): filtered dataframe
+    """
+
+    # convert str to list
     if isinstance(cities, str):
         cities = [cities]
-    data["year"] = data["year"].astype(int)
-    data = data[data["year"] == year]
-    cities_filter = [c for c in data.columns.tolist() if c in cities]
 
-    return data[['year', 'month'] + cities_filter]
+    # filter based on a certain year
+    data = data[data["year"] == year]
+
+    alias_to_city = {alias: city_name for city_name, aliases in city_aliases.items() for alias in aliases}
+
+    columns_to_select = [alias for city_name in cities for alias in city_aliases.get(city_name, []) if alias in data.columns]
+
+    data_filtered = data[['year', 'month'] + columns_to_select]
+    data_filtered = data_filtered.rename(columns=alias_to_city)
+
+    return data_filtered
 
 
 
