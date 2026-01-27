@@ -34,9 +34,9 @@ rule pm25_year:
 rule pubmed_year:
     output:
         pubmed_papers="results/literature/{year}/pubmed_papers.csv",
-        summary="results/literature/{year}/summary_by_year.csv",
+        summary="results/literature/summary_by_year.csv",
         journals="results/literature/{year}/top_journals.csv",
-        papers_year="results/literature/{year}/papers_per_year.png"
+        papers_year="results/literature/papers_per_year.png"
     params:
         year="{year}"
     shell:
@@ -44,11 +44,14 @@ rule pubmed_year:
 
 rule report_task4:
     input:
-        pm25=expand("results/pm25/{year}/exceedance_days.csv", year=years),
-        literature=expand("results/literature/{year}/pubmed_papers.csv", year=years)
+        pm25=expand("results/pm25/{year}/exceedance_days.csv",year=years),
+        pubmed_papers=expand("results/literature/{year}/pubmed_papers.csv",year=years),
+        summary="results/literature/summary_by_year.csv",
+        papers_year="results/literature/papers_per_year.png",
+        journals=expand("results/literature/{year}/top_journals.csv",year=years)
     output:
         "results/report_task4.md"
     shell:
-        """ python scripts/NAZWA_PLIKU --config config/task4.yaml """ # WPISAĆ NAZWĘ PLIKU!
+        """ python scripts/report_maker.py --config config/task4.yaml """
 
 

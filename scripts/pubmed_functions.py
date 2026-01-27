@@ -5,6 +5,17 @@ import matplotlib.pyplot as plt
 
 
 def build_query(config, year):
+    """
+        Function that combines topic keywords, city aliases, and a publication year into a single PubMed-compatible query.
+
+        Args:
+            config (dict): dictionary of configuration parameters
+            year (int): PubMed-compatible year
+
+        Returns:
+            full_query (str): PubMed-compatible query
+
+    """
     topic_query = " OR ".join(config["pubmed"]["queries"])
 
     city_aliases = config["city_aliases"]
@@ -18,24 +29,16 @@ def build_query(config, year):
 
 
 
-def extract_month(dp):
-
-    m = re.search(r"^\d{4}-(\d{2})", dp)
-    if m:
-        return m.group(1)
-
-    m = re.search(r"^\d{4}\s+([A-Za-z]{3})", dp)
-    if m:
-        month_str = m.group(1).lower()
-        months_map = {"jan": "01", "feb": "02", "mar": "03", "apr": "04", "may": "05", "jun": "06", "jul": "07",
-                      "aug": "08", "sep": "09", "oct": "10", "nov": "11", "dec": "12"}
-        return months_map.get(month_str)
-
-    return None
-
-
-
 def record_to_df(record):
+    """
+        Function that converts a PubMed-compatible record into a Pandas DataFrame.
+
+        Args:
+             record (dict): PubMed-compatible record
+
+        Returns:
+            pandas.DataFrame: PubMed-compatible DataFrame
+    """
 
     rows = []
     for rec in record:
@@ -44,31 +47,49 @@ def record_to_df(record):
         year = rec.get("DP", "")[:4]
         journal = rec.get("JT", "")
         authors = ", ".join(rec.get("AU", []))
-        month = extract_month(rec.get("DP", ""))
-        rows.append({"PMID": PMID, "title": title, "year": year, "month": month, "journal": journal, "authors": authors})
+        rows.append({"PMID": PMID, "title": title, "year": year, "journal": journal, "authors": authors})
 
     return pd.DataFrame(rows)
 
 
 
-def month_count_per_month(df):
+def papers_count_per_year(df):
+    """
+        Function that counts the number of papers per year.
 
-    month_counts = (df.groupby("month")
+        Args:
+            df (pandas.DataFrame): PubMed-compatible DataFrame
+
+        Returns:
+            year_count (pandas.DataFrame): Number of papers per year
+
+    """
+
+    year_count = (df.groupby("year")
                     .size()
                     .reset_index(name="count")
-                    .sort_values("month"))
+                    .sort_values("year"))
 
-    return month_counts
+    return year_count
 
 
 
-def plot_per_month(month_counts, year):
+def plot_per_year(year_count):
+    """
+        Function that plots the number of papers per year.
+
+        Args:
+            year_count (pandas.DataFrame): Number of papers per year
+
+        Returns:
+            fig (matplotlib.figure.Figure): Figure containing the number of papers per year
+    """
 
     fig, ax = plt.subplots(figsize=(12, 6))
-    ax.bar(month_counts["month"], month_counts["count"])
+    ax.bar(year_count["year"], year_count["count"])
 
-    ax.set_title(f"Liczba artykułów na miesiąc w roku {year}")
-    ax.set_xlabel("Miesiąc")
+    ax.set_title(f"Liczba artykułów w danym roku")
+    ax.set_xlabel("Rok")
     ax.set_ylabel("Liczba artykułów")
 
     return fig
@@ -76,6 +97,15 @@ def plot_per_month(month_counts, year):
 
 
 def top_journals(df):
+    """
+        Function that returns the top journals from the PubMed-compatible DataFrame.
+
+        Args:
+            df (pandas.DataFrame): PubMed-compatible DataFrame
+
+        Returns:
+            top (pandas.DataFrame): dataframe containing top journals
+    """
 
     top = df["journal"].value_counts().head(10).reset_index.rename(columns={"index": "journal", "journal": "count"})
 

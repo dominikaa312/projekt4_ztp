@@ -30,14 +30,13 @@ pubmed_papers_out_path = os.path.join("results", "literature", str(year), "pubme
 os.makedirs(os.path.dirname(pubmed_papers_out_path), exist_ok=True)
 pubmed_papers_df.to_csv(pubmed_papers_out_path, index=False)
 
+year_count_out_path = os.path.join("results", "literature", "summary_by_year.csv")
+year_count = papers_count_per_year(pubmed_papers_df)
+year_count.to_csv(year_count_out_path, index=False)
 
-
-fig_month_out_path = os.path.join("results", "literature", str(year), "papers_per_year.png")
-month_counts = month_count_per_month(pubmed_papers_df)
-fig_month = plot_per_month(month_counts, year)
-fig_month.savefig(fig_month_out_path, dpi=300)
-
-
+fig_year_out_path = os.path.join("results", "literature", "papers_per_year.png")
+fig_year = plot_per_year(year_count)
+fig_year.savefig(fig_year_out_path, dpi=300)
 
 top_journals_out_path = os.path.join("results", "literature", str(year), "top_journals.csv")
 top = top_journals(pubmed_papers_df)
