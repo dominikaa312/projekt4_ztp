@@ -21,6 +21,7 @@ def plot_city_trends(monthly_df, cities, year, ylim=[0, 75]):
         ax (matplotlib.axes.Axes): the desired lineplot to be shown in Zad2
     """
 
+    # preparing data
     df = monthly_df[monthly_df["year"] == year][["year", "month"] + cities]
 
     df_long = df.melt(
@@ -64,51 +65,52 @@ def plot_city_trends(monthly_df, cities, year, ylim=[0, 75]):
 
 def heatmaps(monthly_df, year, cities):
     """
+        Function that creates heatmaps for selected cities and years.
         Args:
-            monthly_df (pd.DataFrame): DataFrame z śrędnią miesięczna stężenia PM2.5 dla wszystkich lokalizacji i lat.
-            year (int): Rok, który ma być uwzględniony w wykresie.
-
+            monthly_df (pd.DataFrame): dataframe with monthly average levels of PM2.5
+            year (int): year to include in the plot
+            cities (list[str]): cities to include in the plot
         Returns:
-            fig (plotly.graph_objects.Figure): Wykres heatmap z stężeniem PM2.5 dla wszystkich lokalizacji i podanego roku.
+            fig (plotly.graph_objects.Figure): heatmaps for selected cities and year
     """
 
+    # if str convert to list
     if isinstance(cities, str):
         cities = [cities]
 
-    locations = [c for c in monthly_df.columns if c not in ["year", "month"]]
-    locations = [c for c in locations if c in cities]
+    # filtering data to have only one year and cities of interest
+    df = monthly_df[monthly_df["year"] == year][["year", "month"] + cities]
 
+    # creating subplots and heatmap
+    zmin = df[cities].min().min()
+    zmax = df[cities].max().max()
 
-    zmin = monthly_df[locations].min().min()
-    zmax = monthly_df[locations].max().max()
-
-    n = len(locations)
+    n = len(cities)
     cols = 2 if n > 1 else 1
     rows = int(np.ceil(n / cols))
 
-    fig = make_subplots(rows=rows, cols=cols, subplot_titles=locations)
+    fig = make_subplots(rows=rows, cols=cols, subplot_titles=cities)
 
-    for i, loc in enumerate(locations):
+    for i, loc in enumerate(cities):
         row = i // cols + 1
         col = i % cols + 1
 
-        heatmap_data = monthly_df.set_index("month")[loc].reindex(range(1, 13))
+        heatmap_data = df.set_index("month")[loc].reindex(range(1, 13))
         z = heatmap_data.values.reshape(12, 1)
 
         fig.add_trace(
             go.Heatmap(z=z, x=[""], y=list(range(1, 13)),
-                    colorscale="Viridis",
+                    colorscale="RdBu_r",
                     zmin=zmin, zmax=zmax,
                     showscale=(i == 0),
-                    hovertemplate = ("Miesiąc: %{y}<br>"
-                                    "Stężenie: %{z:.2f} µg/m³"
-                                    "<extra></extra>"),
+                    hovertemplate = ("Stężenie: %{z:.2f} µg/m³"),
                     colorbar=dict(title=dict(text="PM2.5 µg/m³"),
                                 tickmode="array",
                                 tickvals=np.linspace(zmin, zmax, 5),
                                 ticktext=[f"{v:.0f}" for v in np.linspace(zmin, zmax, 5)])),
                     row=row, col=col)
 
+    # each month is labeled on y-ax
     for i in range(1, rows * cols + 1):
         fig.update_yaxes(tickmode="array",
                         tickvals=list(range(1, 13)),
@@ -118,7 +120,7 @@ def heatmaps(monthly_df, year, cities):
                         col=(i - 1) % cols + 1)
 
     fig.update_layout(height=400 * rows, width=700,
-        title=dict(text=f"Średnie miesięczne stężenia PM2.5 w roku {year}", x=0.5), font=dict(size=11))
+                    title=dict(text=f"Średnie miesięczne stężenia PM2.5 w roku {year}", x=0.5), font=dict(size=11))
 
     return fig
 

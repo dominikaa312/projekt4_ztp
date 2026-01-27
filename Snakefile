@@ -8,7 +8,7 @@ cities = json.dumps(config["cities"])
 rule all:
     input:
         expand("results/pm25/{year}/exceedance_days.csv", year=years),
-        expand("results/pm25/{year}/monthly_average.csv", year=years),
+        expand("results/pm25/{year}/daily_means.csv", year=years),
         expand("results/pm25/{year}/figures/heatmap.png", year=years),
         expand("results/pm25/{year}/figures/plot_city_trends.png", year=years),
         expand("results/literature/{year}/pubmed_papers.csv", year=years),
@@ -21,7 +21,7 @@ rule all:
 rule pm25_year:
     output:
         exceed="results/pm25/{year}/exceedance_days.csv",
-        month="results/pm25/{year}/monthly_average.csv",
+        month="results/pm25/{year}/daily_means.csv",
         heatmap="results/pm25/{year}/figures/heatmap.png",
         city_trends="results/pm25/{year}/figures/plot_city_trends.png"
     params:
