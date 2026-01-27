@@ -22,6 +22,9 @@ def plot_city_trends(monthly_df, cities, year, ylim=[0, 75]):
     """
 
     # preparing data
+    if "year" not in monthly_df.columns:
+        monthly_df = monthly_df.reset_index()
+
     df = monthly_df[monthly_df["year"] == year][["year", "month"] + cities]
 
     df_long = df.melt(
@@ -58,7 +61,7 @@ def plot_city_trends(monthly_df, cities, year, ylim=[0, 75]):
 
     ax.legend(title="", frameon=False)
     fig.tight_layout()
-
+    plt.close(fig)
     return fig
 
 
@@ -74,7 +77,9 @@ def heatmaps(monthly_df, year, cities):
             fig (plotly.graph_objects.Figure): heatmaps for selected cities and year
     """
 
-    # if str convert to list
+    if "year" not in monthly_df.columns:
+        monthly_df = monthly_df.reset_index()
+
     if isinstance(cities, str):
         cities = [cities]
 
@@ -96,7 +101,7 @@ def heatmaps(monthly_df, year, cities):
         col = i % cols + 1
 
         heatmap_data = df.set_index("month")[loc].reindex(range(1, 13))
-        z = heatmap_data.values.reshape(12, 1)
+        z = heatmap_data.values[::-1].reshape(12, 1)
 
         fig.add_trace(
             go.Heatmap(z=z, x=[""], y=list(range(1, 13)),
@@ -114,8 +119,9 @@ def heatmaps(monthly_df, year, cities):
     for i in range(1, rows * cols + 1):
         fig.update_yaxes(tickmode="array",
                         tickvals=list(range(1, 13)),
-                        ticktext=[str(m) for m in range(1, 13)],
+                        ticktext=[str(m) for m in range(1, 13)][::-1],
                         title_text="Miesiąc",
+                        title_standoff=7,
                         row=(i - 1) // cols + 1,
                         col=(i - 1) % cols + 1)
 
