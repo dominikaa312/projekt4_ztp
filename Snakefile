@@ -1,8 +1,11 @@
 import json
+from datetime import datetime
 configfile: "config/task4.yaml"
 
 years = config["years"]
 cities = json.dumps(config["cities"])
+timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+report_file = f"results/report_task4_{timestamp}.ipynb"
 
 
 rule all:
@@ -15,7 +18,26 @@ rule all:
         expand("results/literature/{year}/summary_by_year.csv", year=years),
         expand("results/literature/{year}/top_journals.csv", year=years),
         expand("results/literature/{year}/papers_per_year.png", year=years),
-        "results/report_task4.md"
+        report_file
+
+
+rule generate_year_csv:
+    output:
+        "results/data/years/{year}.csv"
+    shell:
+        """ python generate_year_csv.py --year {wildcards.year} --output {output} """
+
+
+rule combined_years_csv:
+    input:
+        expand("results/data/years/year={year}.csv", year=years)
+    output:
+        "results/data/all_data.csv",
+        "results/data/monthly_average.csv",
+        "results/data/daily_average.csv"
+    shell:
+        """ python combined_years_csv.py --input {input} """
+
 
 
 rule pm25_year:
@@ -24,23 +46,27 @@ rule pm25_year:
         month="results/pm25/{year}/daily_means.csv",
         heatmap="results/pm25/{year}/figures/heatmap.png",
         city_trends="results/pm25/{year}/figures/plot_city_trends.png"
-    params:
-        year="{year}",
-        cities=cities
     shell:
-        """ python scripts/pm25_year.py --year {params.year} --cities {params.cities} --config config/task4.yaml """
+        """ python scripts/pm25_year.py --year {wildcards.year} --config config/task4.yaml """
 
 
 rule pubmed_year:
     output:
         pubmed_papers="results/literature/{year}/pubmed_papers.csv",
-        summary="results/literature/summary_by_year.csv",
-        journals="results/literature/{year}/top_journals.csv",
-        papers_year="results/literature/papers_per_year.png"
-    params:
-        year="{year}"
+        journals="results/literature/{year}/top_journals.csv"
     shell:
-        """ python scripts/pubmed_fetch.py --year {params.year} --config config/task4.yaml """
+        """ python scripts/pubmed_fetch.py --year {wildcards.year} --config config/task4.yaml """
+
+
+rule pubmed_summary:
+    input:
+        expand("results/literature/{year}/pubmed_papers.csv", year=years),
+    output:
+        pubmed_summary="results/literature/pubmed_summary.csv",
+        papers_year="results/literature/papers_per_year.png"
+    shell:
+        """ python scripts/pubmed_summary --config config/task4.yaml """
+
 
 rule report_task4:
     input:
@@ -50,8 +76,10 @@ rule report_task4:
         papers_year="results/literature/papers_per_year.png",
         journals=expand("results/literature/{year}/top_journals.csv",year=years)
     output:
-        "results/report_task4.md"
+        report_file
+    params:
+        timestamp="{timestamp}",
     shell:
-        """ python scripts/report_maker.py --config config/task4.yaml """
+        """ python scripts/report_maker.py --timestamp {params.timestamp} --config config/task4.yaml """
 
 

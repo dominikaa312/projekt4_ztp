@@ -165,35 +165,6 @@ def load_data(years):
 
 
 
-def data_filter(data, year, cities, city_aliases):
-    """
-    Function used filter the data based on a certain year and cities
-    Args:
-        data (pandas.DataFrame): a dataframe of PM2.5 levels
-        year (int): year of interest
-        cities (list): list of cities of interest
-    Returns:
-        data_filtered (pandas.DataFrame): filtered dataframe
-    """
-
-    # convert str to list
-    if isinstance(cities, str):
-        cities = [cities]
-
-    # filter based on a certain year
-    data = data[data["year"] == year]
-
-    alias_to_city = {alias: city_name for city_name, aliases in city_aliases.items() for alias in aliases}
-
-    columns_to_select = [alias for city_name in cities for alias in city_aliases.get(city_name, []) if alias in data.columns]
-
-    data_filtered = data[['year', 'month'] + columns_to_select]
-    data_filtered = data_filtered.rename(columns=alias_to_city)
-
-    return data_filtered
-
-
-
 def main():
     print("Load data module. This is only to be used through an import.")
 

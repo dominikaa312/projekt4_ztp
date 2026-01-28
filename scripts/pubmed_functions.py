@@ -1,5 +1,4 @@
 import pandas as pd
-import re
 import matplotlib.pyplot as plt
 
 
@@ -19,7 +18,7 @@ def build_query(config, year):
     topic_query = " OR ".join(config["pubmed"]["queries"])
 
     city_aliases = config["city_aliases"]
-    city_query = " OR ".join(f'"{alias}"[TIAB]' for aliases in city_aliases.values() for alias in aliases)
+    city_query = " OR ".join(f'"{alias}"[TIAB]'for aliases_list in city_aliases.values() for alias in aliases_list)
 
     year_query = f'"{year}"[PDAT] : "{year}"[PDAT]'
 
@@ -107,7 +106,8 @@ def top_journals(df):
             top (pandas.DataFrame): dataframe containing top journals
     """
 
-    top = df["journal"].value_counts().head(10).reset_index.rename(columns={"index": "journal", "journal": "count"})
+    top = (df["journal"].value_counts().head(10).reset_index())
+    top = top.rename(columns={"index": "journal", "journal": "count"})
 
     return top
 

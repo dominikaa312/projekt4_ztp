@@ -124,7 +124,7 @@ def daily_average(data):
 
 
 
-def count_days_over_threshold(data, threshold, year, cities):
+def count_days_over_threshold(data, threshold, year, cities, city_aliases):
     """
      Function used to count days when PM2.5 concentration exceeds a given threshold for given cities in a given year.
      Args:
@@ -134,7 +134,7 @@ def count_days_over_threshold(data, threshold, year, cities):
          cities (list): list of cities of interest
 
      Returns:
-         exceedance_counts (pandas.DataFrame): a dataframe containing - for every station and given year - the number days where the average PM2.5 exceeded the acceptable threshold.
+         exceedance_counts (pandas.DataFrame): a dataframe containing - for every station and given year - the number of days when the average PM2.5 exceeded the acceptable threshold.
      """
 
     ## convert the incoherent date column to one unified format
@@ -153,9 +153,6 @@ def count_days_over_threshold(data, threshold, year, cities):
     # extract year and date
     data["year"] = dt.dt.year
     data["date"] = dt.dt.date
-
-    if "Rok" in data.columns:
-        data = data.drop("Rok", axis=1)
 
     data = data[data["year"] == year]
 
@@ -181,6 +178,20 @@ def count_days_over_threshold(data, threshold, year, cities):
     long = long.drop("station_tuple", axis=1)
 
     long["pm25"] = pd.to_numeric(long["pm25"], errors="coerce")
+
+    city_cols = []
+    for city in cities:
+        if city in long["city"].values:
+            city_cols.append(city)
+        elif city_aliases and city in city_aliases:
+            for alias in city_aliases[city]:
+                if alias in long["city"].values:
+                    long.loc[long["city"] == alias, "city"] = city
+                    city_cols.append(city)
+                    break
+
+    # filter only selected cities
+    long = long[long["city"].isin(city_cols)]
 
     # compute daily average PM2.5 by station
     daily = (

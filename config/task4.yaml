@@ -1,18 +1,18 @@
-years: [2019, 2024]
+years: [2015, 2024]
 
 cities:
   - Warsaw
   - Katowice
 
 city_aliases:
-  Warszawa: ["Warsaw", "Warszawa"]
+  Warsaw: ["Warsaw", "Warszawa"]
   Katowice: ["Katowice"]
 
 pm25:
   norm_limit: 15
 
 pubmed:
-  entrez_email: 'd.aniszewsk2@student.uw.edu.pl'
+  entrez_email: d.aniszewsk2@student.uw.edu.pl
   queries:
     - '"PM2.5"[TIAB]'
     - '"fine particulate matter"[TIAB]'

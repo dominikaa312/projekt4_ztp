@@ -7,7 +7,7 @@ from plotly.subplots import make_subplots
 
 
 
-def plot_city_trends(monthly_df, cities, year, ylim=[0, 75]):
+def plot_city_trends(monthly_df, cities, year, city_aliases, ylim=[0, 75]):
     """
     Plot monthly PM2.5 trends for selected cities and years.
 
@@ -25,7 +25,19 @@ def plot_city_trends(monthly_df, cities, year, ylim=[0, 75]):
     if "year" not in monthly_df.columns:
         monthly_df = monthly_df.reset_index()
 
-    df = monthly_df[monthly_df["year"] == year][["year", "month"] + cities]
+    # filtering data to have only one year and cities of interest
+    selected_cols = ["year", "month"]
+
+    for city in cities:
+        if city in monthly_df.columns:
+            selected_cols.append(city)
+        elif city_aliases and city in city_aliases:
+            for alias in city_aliases[city]:
+                if alias in monthly_df.columns:
+                    selected_cols.append(alias)
+                    break
+
+    df = monthly_df[monthly_df["year"] == year][selected_cols]
 
     df_long = df.melt(
         id_vars=["year", "month"],
@@ -66,7 +78,7 @@ def plot_city_trends(monthly_df, cities, year, ylim=[0, 75]):
 
 
 
-def heatmaps(monthly_df, year, cities):
+def heatmaps(monthly_df, year, cities, city_aliases):
     """
         Function that creates heatmaps for selected cities and years.
         Args:
@@ -84,19 +96,31 @@ def heatmaps(monthly_df, year, cities):
         cities = [cities]
 
     # filtering data to have only one year and cities of interest
-    df = monthly_df[monthly_df["year"] == year][["year", "month"] + cities]
+    selected_cols = ["year", "month"]
+
+    for city in cities:
+        if city in monthly_df.columns:
+            selected_cols.append(city)
+        elif city_aliases and city in city_aliases:
+            for alias in city_aliases[city]:
+                if alias in monthly_df.columns:
+                    selected_cols.append(alias)
+                    break
+
+    df = monthly_df[monthly_df["year"] == year][selected_cols]
+    city_cols = [col for col in selected_cols if col not in ["year", "month"]]
 
     # creating subplots and heatmap
-    zmin = df[cities].min().min()
-    zmax = df[cities].max().max()
+    zmin = df[city_cols].min().min()
+    zmax = df[city_cols].max().max()
 
-    n = len(cities)
+    n = len(city_cols)
     cols = 2 if n > 1 else 1
     rows = int(np.ceil(n / cols))
 
-    fig = make_subplots(rows=rows, cols=cols, subplot_titles=cities)
+    fig = make_subplots(rows=rows, cols=cols, subplot_titles=city_cols)
 
-    for i, loc in enumerate(cities):
+    for i, loc in enumerate(city_cols):
         row = i // cols + 1
         col = i % cols + 1
 
