@@ -39,16 +39,15 @@ def plot_city_trends(monthly_df, cities, year, city_aliases, ylim=[0, 75]):
 
     df = monthly_df[monthly_df["year"] == year][selected_cols]
 
-    col_map = dict(zip(selected_cols[2:], cities))
-    df = df.rename(columns=col_map)
-
     df_long = df.melt(
         id_vars=["year", "month"],
         var_name="city",
         value_name="pm25"
     )
 
-    df_long["series"] = df_long["city"]
+    df_long["series"] = (
+        df_long["city"] + " " + df_long["year"].astype(str)
+    )
 
     # plotting
     fig, ax = plt.subplots(figsize=(12, 6))
