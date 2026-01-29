@@ -65,5 +65,6 @@ def test_city_trends_num_lines(monthly_df, configfile):
     with open(configfile) as f:
         config = yaml.safe_load(f)
     df = monthly_df.set_index(["year", "month"])
-    fig, ax = plot_city_trends(df, config['cities'], config['years'][0], config['city_aliases'], ylim=[0, 75])
+    fig = plot_city_trends(df, config['cities'], config['years'][0], config['city_aliases'], ylim=[0, 75])
+    ax = fig.axes[0]
     assert len(ax.get_lines()) == len(config['cities'])
