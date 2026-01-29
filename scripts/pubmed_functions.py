@@ -95,11 +95,6 @@ def plot_per_year(year_count):
 
 
 
-def merge_dfs(dfs):
-    return pd.concat(dfs, ignore_index=True)
-
-
-
 def top_journals(df):
     """
         Function that returns the top journals from the PubMed-compatible DataFrame.
