@@ -48,9 +48,7 @@ def plot_city_trends(monthly_df, cities, year, city_aliases, ylim=[0, 75]):
         value_name="pm25"
     )
 
-    df_long["series"] = (
-        df_long["city"] + " " + df_long["year"].astype(str)
-    )
+    df_long["series"] = df_long["city"]
 
     # plotting
     fig, ax = plt.subplots(figsize=(12, 6))
