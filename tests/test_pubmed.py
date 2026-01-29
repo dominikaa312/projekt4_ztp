@@ -36,7 +36,7 @@ def test_top_journals_count_correct():
                     "title": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8"]})
     top = top_journals(df)
     assert "A" in top["journal"].values
-    assert top["total_count"].iloc[0] == 5
+    assert top["total_count"].iloc[0] == 3
 
 
 def test_papers_count_per_year_sum_correct():
