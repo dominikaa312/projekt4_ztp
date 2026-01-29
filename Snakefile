@@ -70,16 +70,17 @@ rule pubmed_summary:
 
 rule report_task4:
     input:
-        pm25=expand("results/pm25/{year}/exceedance_days.csv",year=years),
-        pubmed_papers=expand("results/literature/{year}/pubmed_papers.csv",year=years),
-        summary="results/literature/summary_by_year.csv",
+        pm25=expand("results/pm25/{year}/exceedance_days.csv", year=years),
+        pubmed_papers=expand("results/literature/{year}/pubmed_papers.csv", year=years),
+        pubmed_summary="results/literature/pubmed_summary.csv",
         papers_year="results/literature/papers_per_year.png",
-        journals=expand("results/literature/{year}/top_journals.csv",year=years)
+        journals=expand("results/literature/{year}/top_journals.csv", year=years),
+        monthly="results/data/monthly_average.csv"
     output:
         report_file
     params:
         timestamp="{timestamp}",
     shell:
-        """ python scripts/report_maker.py --timestamp {params.timestamp} --config config/task4.yaml """
+        """ python scripts/report_maker.py --timestamp {params.timestamp} --input {input} --config config/task4.yaml """
 
 
