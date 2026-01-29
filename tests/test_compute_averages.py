@@ -2,10 +2,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from scripts.compute_averages import (
-    monthly_average, 
-    count_days_over_treshold,
-    )
+from scripts.compute_averages import monthly_average, count_days_over_threshold
 
 @pytest.fixture
 def raw_pm25():
@@ -73,7 +70,7 @@ def raw_pm25_daily():
     )
 
 def test_count_days_over_threshold(raw_pm25_daily):
-    out = count_days_over_treshold(raw_pm25_daily.copy(), treshold=15)
+    out = count_days_over_threshold(raw_pm25_daily.copy(), threshold=15)
 
     out = out.sort_values(["city", "station"]).reset_index(drop=True)
 
@@ -92,6 +89,6 @@ def test_count_days_over_threshold(raw_pm25_daily):
     pd.testing.assert_frame_equal(out, expected)
 
 def test_count_days_over_threshold_none_exceeded(raw_pm25_daily):
-    out = count_days_over_treshold(raw_pm25_daily.copy(), treshold=250)
+    out = count_days_over_threshold(raw_pm25_daily.copy(), threshold=250)
 
     assert (out["days_exceeded"] == 0).all()
