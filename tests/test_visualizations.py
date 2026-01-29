@@ -10,7 +10,7 @@ import os
 # przykładowe dane
 @pytest.fixture(scope="session")
 def monthly_df():
-   df = pd.DataFrame({"year": [2015],
+   df = pd.DataFrame({"year": [2015, 2015, 2015, 2015],
                        "month": [1, 2, 3, 4],
                        "Warszawa": [1.3, 20, 30, 5],
                         "Katowice": [4.2, 15, 3.1, 10],

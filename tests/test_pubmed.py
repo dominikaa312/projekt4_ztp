@@ -11,7 +11,10 @@ def configfile():
     config_data = {"years": [2015, 2024],
                 "cities": ["Warsaw", "Katowice"],
                 "city_aliases": {"Warsaw": ["Warsaw", "Warszawa"], "Katowice": ["Katowice"]},
-                "pm25": {"norm_limit": 15}}
+                "pm25": {"norm_limit": 15},
+                "pubmed": {"entrez_email": {"d.aniszewsk2 @ student.uw.edu.pl"}},
+                "queries": {'"PM2.5"[TIAB]', '"fine particulate matter"[TIAB]'},
+                "retmax": 10}
 
     with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".yaml") as f:
         yaml.dump(config_data, f)
