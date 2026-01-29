@@ -107,7 +107,7 @@ def top_journals(df):
     """
 
     top = (df["journal"].value_counts().head(10).reset_index())
-    top = top.rename(columns={"index": "journal", "journal": "count"})
+    top.columns = ["journal", "total_count"]
 
     return top
 
