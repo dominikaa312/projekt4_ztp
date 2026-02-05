@@ -78,7 +78,7 @@ Nalezy podać m. in.:
 
 ---------
 
-### Uruchmianie pipeline'u
+### Uruchomienie pipeline'u
 
 1. Dry-run (sprawdzenie workflow)
 ```bash
