@@ -35,8 +35,9 @@ def test_monthly_average_values(raw_pm25):
     wroc_wyb = (50.0 + 33.8244) / 2
     wroc_avg = (wroc_al + wroc_wyb) / 2
 
-    assert out.loc[2015, 1, "Jelenia Góra"] == pytest.approx(jel_gora)
-    assert out.loc[2015, 1, "Wrocław"] == pytest.approx(wroc_avg)
+    row = out[(out["year"] == 2015) & (out["month"] == 1)]
+    assert row["Jelenia Góra"].iloc[0] == pytest.approx(jel_gora)
+    assert row["Wrocław"].iloc[0] == pytest.approx(wroc_avg)
 
 
 @pytest.fixture
