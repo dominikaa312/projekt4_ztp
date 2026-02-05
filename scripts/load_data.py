@@ -12,6 +12,8 @@ def load_data(years, cities, city_aliases):
         and then combines them into one dataframe
         Args:
             years (list[int]): list of years of interest
+            cities (list[str]): list of cities of interest
+            city_aliases (list[str]): list of city aliases
         Returns:
             all_data (pd.DataFrame): dataframe, that contain daily levels of PM2.5 from various locations in given years
     """
@@ -152,6 +154,7 @@ def load_data(years, cities, city_aliases):
     all_data = pd.concat([df for df in dataframes.values()], ignore_index=True)
     all_data.columns = ["Kod stacji"] + list(multi_index)
 
+    # filtering data to have only cities of interest
     selected_cols = ["Kod stacji"]
     for city in cities:
         matches = [col for col in all_data.columns if col[0] == city]
@@ -160,9 +163,7 @@ def load_data(years, cities, city_aliases):
                 matches = [col for col in all_data.columns if col[0] == alias]
                 if matches:
                     break
-
         selected_cols.extend(matches)
-
     all_data = all_data[selected_cols]
 
     return all_data

@@ -20,8 +20,7 @@ if os.path.exists(args.all_data):
     existing_df = pd.read_csv(args.all_data)
     new_years = set(new_df['year']) - set(existing_df['year'])
     if new_years:
-        to_append = new_df[new_df['year'].isin(new_years)]
-        df_all = pd.concat([existing_df, to_append], ignore_index=True)
+        df_all = pd.concat([existing_df, new_df[new_df['year'].isin(new_years)]], ignore_index=True)
     else:
         df_all = existing_df
 else:
@@ -31,22 +30,20 @@ df_all.to_csv(args.all_data, index=False)
 
 
 monthly_df = pd.read_csv(args.monthly) if os.path.exists(args.monthly) else pd.DataFrame()
-new_monthly = monthly_average(new_df)
 
 if not monthly_df.empty:
-    combined_monthly = pd.concat([monthly_df, new_monthly], ignore_index=True)
+    combined_monthly = pd.concat([monthly_df, monthly_average(new_df)], ignore_index=True)
 else:
-    combined_monthly = new_monthly
+    combined_monthly = monthly_average(new_df)
 
 combined_monthly.to_csv(args.monthly, index=False)
 
 
 daily_df = pd.read_csv(args.daily) if os.path.exists(args.daily) else pd.DataFrame()
-new_daily = daily_average(new_df)
 
 if not daily_df.empty:
-    combined_daily = pd.concat([daily_df, new_daily], ignore_index=True)
+    combined_daily = pd.concat([daily_df, daily_average(new_df)], ignore_index=True)
 else:
-    combined_daily = new_daily
+    combined_daily = daily_average(new_df)
 
 combined_daily.to_csv(args.daily, index=False)

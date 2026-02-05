@@ -123,7 +123,8 @@ def count_days_over_threshold(data, threshold, year, cities, city_aliases):
          data (pandas.DataFrame): a dataframe of PM2.5 levels
          threshold (int): maximum acceptable PM2.5
          year (int): year of interest
-         cities (list): list of cities of interest
+         cities (list[str]): list of cities of interest
+         city_aliases (list[str]): list of aliases of cities
 
      Returns:
          exceedance_counts (pandas.DataFrame): a dataframe containing - for every station and given year - the number of days when the average PM2.5 exceeded the acceptable threshold.
