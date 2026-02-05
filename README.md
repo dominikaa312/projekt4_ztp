@@ -8,7 +8,7 @@ interpretację zmian poziomu zanieczyszczenia powietrza w czasie.
 
 #### Repozytorium zawiera:
 * Pipeline Snakemake:
-  * `Snakefile` - główny pli definiujący cały workflow
+  * `Snakefile` - główny plik definiujący cały workflow
   * `config/task4.yaml` - plik konfiguracyjny
 * Skrypty, które znajdują się w folderze `scripts/`:
   * `combined_years.py` - łączenie danych z lat podanych w pliku konfiguracyjnym
