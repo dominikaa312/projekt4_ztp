@@ -24,8 +24,8 @@ def test_monthly_average_structure(raw_pm25):
 
     assert "year" in out.columns
     assert "month" in out.columns
-
-    assert {"Jelenia Góra", "Wrocław"} in out.columns
+    assert "Wrocław" in out.columns
+    assert "Jelenia Góra" in out.columns
 
 def test_monthly_average_values(raw_pm25):
     out = monthly_average(raw_pm25.copy())
@@ -35,8 +35,8 @@ def test_monthly_average_values(raw_pm25):
     wroc_wyb = (50.0 + 33.8244) / 2
     wroc_avg = (wroc_al + wroc_wyb) / 2
 
-    assert out.loc[(2015, 1), "Jelenia Góra"] == pytest.approx(jel_gora)
-    assert out.loc[(2015, 1), "Wrocław"] == pytest.approx(wroc_avg)
+    assert out.loc[2015, 1, "Jelenia Góra"] == pytest.approx(jel_gora)
+    assert out.loc[2015, 1, "Wrocław"] == pytest.approx(wroc_avg)
 
 
 @pytest.fixture
