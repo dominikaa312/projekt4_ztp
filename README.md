@@ -33,7 +33,8 @@ Pipeline generuje dane wejściowe w folderze `data/`:
 #### Dane wyjściowe:  
 Pipeline generuje dane wyjściowe w folderze `results/`:
 * Foldery dla lat podanych w pliku konfiguracyjnym, które zawierają:
-  * Plik zawierający liczbę dni z przekroczonym dopuszczalnym stężeniem PM2.5
+  * Plik zawierający liczbę dni z przekroczonym dopuszczalnym stężeniem PM2.5 w pojedynczym roku
+  * Średnie dzienne stężenie PM2.5 w danych miastach w jednym roku
   * Wizualizacje
   * Zestawienie publikacji PubMed
 * Podsumowanie publikacji z lat podanych w pliku konfiguracyjnym
