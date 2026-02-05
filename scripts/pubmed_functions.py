@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 
 
 
@@ -90,6 +91,12 @@ def plot_per_year(year_count):
     ax.set_title(f"Liczba artykułów w danym roku")
     ax.set_xlabel("Rok")
     ax.set_ylabel("Liczba artykułów")
+
+    ax.set_xticks(year_count["year"])
+
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
+    ax.grid(axis='y', linestyle='--', alpha=0.5)
 
     return fig
 

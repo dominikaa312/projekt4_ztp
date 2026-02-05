@@ -37,9 +37,12 @@ Pipeline generuje dane wyjściowe w folderze `results/`:
   * Wizualizacje
   * Zestawienie publikacji PubMed
 * Podsumowanie publikacji z lat podanych w pliku konfiguracyjnym
-* Raport końcowy<br><br>
+* Folder `reports/`, w którym znajdują się wygenerowane raporty
 
-Logi zapisywane są w folderze `logs/`
+Pipeline Snakemake został tak skonfigurowany, że nie wykonuje reguł dla lat, które już były policzone, 
+jeśli ich wejścia się nie zmieniły. Weryfikacja odbywa się przez porównanie czasu generowania plików do analizy i raportu
+końcowego. Raport końcowy zawiera informację o czasie trwania pipeline, co umożliwia łatwe sprawdzenie, że program
+szybciej przebiega przy mniejszej liczby plików do wygenerowania.<br><br>
 
 ---------
 

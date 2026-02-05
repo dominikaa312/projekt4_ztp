@@ -46,5 +46,26 @@ fig_heatmap = heatmaps(monthly_avg, year, cities, city_aliases)
 fig_heatmap.write_image(heatmap_out_path)
 
 plot_trends_out_path = os.path.join("results", "pm25", str(year), "figures", "plot_city_trends.png")
+os.makedirs(os.path.dirname(plot_trends_out_path), exist_ok=True)
 plot_trends = plot_city_trends(monthly_avg, cities, year, city_aliases, ylim=[0, 75])
 plot_trends.savefig(plot_trends_out_path, dpi=300)
+
+
+daily_avg_year = daily_avg[daily_avg['year'] == year]
+selected_cols = ['year', 'month', 'day']
+for city in cities:
+    if city in daily_avg.columns:
+        selected_cols.append(city)
+    elif city_aliases and city in city_aliases:
+        for alias in city_aliases[city]:
+            if alias in daily_avg.columns:
+                selected_cols.append(alias)
+                break
+daily_avg_filtered = daily_avg_year[selected_cols]
+
+daily_means_out_path = os.path.join("results", "pm25", str(year), "daily_means.csv")
+os.makedirs(os.path.dirname(daily_means_out_path), exist_ok=True)
+daily_avg_filtered.to_csv(daily_means_out_path, index=False)
+
+print(f"Finished PM2.5 for year {year}, results saved to {exceedance_out_path} and {daily_means_out_path}")
+

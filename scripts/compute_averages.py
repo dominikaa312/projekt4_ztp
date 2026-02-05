@@ -54,11 +54,7 @@ def monthly_average(data):
     )
     .sort_index())
 
-    scripts_dir = os.path.dirname(os.path.abspath(__file__))
-    base_dir = os.path.dirname(scripts_dir)
-    monthly_avg_path = os.path.join(base_dir, "data", "monthly_average.csv")
-
-    monthly.to_csv(monthly_avg_path)
+    monthly = monthly.reset_index()
 
     return monthly
 
@@ -114,11 +110,7 @@ def daily_average(data):
                             columns="city",
                             values="pm2.5").sort_index())
 
-    scripts_dir = os.path.dirname(os.path.abspath(__file__))
-    base_dir = os.path.dirname(scripts_dir)
-    daily_avg_path = os.path.join(base_dir, "data", "daily_average.csv")
-
-    daily.to_csv(daily_avg_path)
+    daily = daily.reset_index()
 
     return daily
 

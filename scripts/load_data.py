@@ -6,9 +6,9 @@ import os
 
 
 
-def load_data(years):
+def load_data(years, cities, city_aliases):
     """
-        Function that downloads dataframes with PM2.5 concentration from various locations in Poland in given years
+        Function that downloads dataframes with PM2.5 concentration from given locations in Poland in given years
         and then combines them into one dataframe
         Args:
             years (list[int]): list of years of interest
@@ -152,16 +152,20 @@ def load_data(years):
     all_data = pd.concat([df for df in dataframes.values()], ignore_index=True)
     all_data.columns = ["Kod stacji"] + list(multi_index)
 
-    # creating a file path to save combined dataframe
-    scripts_dir = os.path.dirname(os.path.abspath(__file__))
-    base_dir = os.path.dirname(scripts_dir)
-    data_path = os.path.join(base_dir, "data", "all_data.csv")
+    selected_cols = ["Kod stacji"]
+    for city in cities:
+        matches = [col for col in all_data.columns if col[0] == city]
+        if not matches and city_aliases and city in city_aliases:
+            for alias in city_aliases[city]:
+                matches = [col for col in all_data.columns if col[0] == alias]
+                if matches:
+                    break
 
-    try:
-        all_data.to_csv(data_path, index=False)
-        return all_data
-    except Exception as e:
-        return f"Wystąpił błąd przy zapisywaniu danych do pliku all_data.csv: {e}"
+        selected_cols.extend(matches)
+
+    all_data = all_data[selected_cols]
+
+    return all_data
 
 
 
